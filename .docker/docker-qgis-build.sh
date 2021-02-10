@@ -85,7 +85,7 @@ echo "::endgroup::"
 #######
 echo "${bold}Building QGIS...${endbold}"
 echo "::group::build"
-${CTEST_BUILD_COMMAND}
+#${CTEST_BUILD_COMMAND}
 echo "::endgroup::"
 
 ########################
@@ -94,8 +94,22 @@ echo "::endgroup::"
 echo "ccache statistics"
 ccache -s
 
+echo "Size disk before"
+du -sh ../build
+
+echo "Nb o files before"
+find . -name "*.o" | wc -l
+
+echo "Remove useless build files"
+find . -name "*.o" -exec rm -Rf {} \;
+
+echo "Nb o files after"
+find . -name "*.o" | wc -l
+
+echo "Size disk after"
+du -sh ../build
+
 popd > /dev/null # build
 popd > /dev/null # /root/QGIS
 
 [ -r /tmp/ctest-important.log ] && cat /tmp/ctest-important.log || true
-
