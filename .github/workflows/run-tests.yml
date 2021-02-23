@@ -245,8 +245,6 @@ jobs:
 #          body: ${{ steps.process-vars.outputs.COMMENT_BODY }}
 
 
-
-
   runtestsoracle:
     env:
       DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
@@ -256,44 +254,50 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        # tests run on 20.04 (Qt 5.12), compile test on 20.10 (Qt 5.14)
-        ubuntu-base: ['20.10']
-      fail-fast: false
+    # strategy:
+    #   matrix:
+    #     # tests run on 20.04 (Qt 5.12), compile test on 20.10 (Qt 5.14)
+    #     ubuntu-base: ['20.10']
+    #   fail-fast: false
 
-    needs: build
+    # needs: build
 
-    outputs:
-      tests_failing: ${{ steps.tests.outputs.TESTS_FAILING }}
-      cdash_url: ${{ steps.tests.outputs.CDASH_URL }}
+    # outputs:
+    #   tests_failing: ${{ steps.tests.outputs.TESTS_FAILING }}
+    #   cdash_url: ${{ steps.tests.outputs.CDASH_URL }}
 
    steps:
+
+      - name: Test coucou
+        run: echo coucou
+
+
+
       # - name: Checkout
       #   uses: actions/checkout@v2
 
-      - name: Set vars
-        env:
-          GITHUB_EVENT_NAME: ${{ github.event_name }}
-          GITHUB_REF: ${{ github.ref }}
-          GITHUB_PR_NUMBER: ${{github.event.number}}
-          UBUNTU_BASE: ${{ matrix.ubuntu-base }}
-        run: |
-          DOCKER_TAG=$(echo $( [[ ${GITHUB_EVENT_NAME} =~ ^pull_request$ ]] && echo ${GITHUB_BASE_REF} || echo ${GITHUB_REF##*/} ) | sed 's/^master$/latest/')$( [[ ${UBUNTU_BASE} != ${DEFAULT_UBUNTU_BASE} ]] && echo "_${UBUNTU_BASE}" || echo "" )
-          CTEST_BUILD_NAME=$( [[ ${GITHUB_EVENT_NAME} =~ ^pull_request$ ]] && echo "PR${GITHUB_PR_NUMBER}" || echo ${GITHUB_REF##*/} )"_${GITHUB_SHA}"
-          [[ ${UBUNTU_BASE} == "20.04" ]] && PATCH_QT_3D=true || PATCH_QT_3D=false
-          echo "DOCKER_TAG=${DOCKER_TAG}" >> $GITHUB_ENV
-          echo "CTEST_BUILD_NAME=${CTEST_BUILD_NAME}" >> $GITHUB_ENV
-          echo "PATCH_QT_3D=${PATCH_QT_3D}" >> $GITHUB_ENV
+      # - name: Set vars
+      #   env:
+      #     GITHUB_EVENT_NAME: ${{ github.event_name }}
+      #     GITHUB_REF: ${{ github.ref }}
+      #     GITHUB_PR_NUMBER: ${{github.event.number}}
+      #     UBUNTU_BASE: ${{ matrix.ubuntu-base }}
+      #   run: |
+      #     DOCKER_TAG=$(echo $( [[ ${GITHUB_EVENT_NAME} =~ ^pull_request$ ]] && echo ${GITHUB_BASE_REF} || echo ${GITHUB_REF##*/} ) | sed 's/^master$/latest/')$( [[ ${UBUNTU_BASE} != ${DEFAULT_UBUNTU_BASE} ]] && echo "_${UBUNTU_BASE}" || echo "" )
+      #     CTEST_BUILD_NAME=$( [[ ${GITHUB_EVENT_NAME} =~ ^pull_request$ ]] && echo "PR${GITHUB_PR_NUMBER}" || echo ${GITHUB_REF##*/} )"_${GITHUB_SHA}"
+      #     [[ ${UBUNTU_BASE} == "20.04" ]] && PATCH_QT_3D=true || PATCH_QT_3D=false
+      #     echo "DOCKER_TAG=${DOCKER_TAG}" >> $GITHUB_ENV
+      #     echo "CTEST_BUILD_NAME=${CTEST_BUILD_NAME}" >> $GITHUB_ENV
+      #     echo "PATCH_QT_3D=${PATCH_QT_3D}" >> $GITHUB_ENV
 
-      - name: Print vars
-        run: |
-          echo DOCKER_TAG: ${DOCKER_TAG}
-          echo CTEST_BUILD_NAME: ${CTEST_BUILD_NAME}
-          echo PATCH_QT_3D: ${PATCH_QT_3D}
+      # - name: Print vars
+      #   run: |
+      #     echo DOCKER_TAG: ${DOCKER_TAG}
+      #     echo CTEST_BUILD_NAME: ${CTEST_BUILD_NAME}
+      #     echo PATCH_QT_3D: ${PATCH_QT_3D}
 
-      - name: Print vars
-        id: tests
-        run: |
-          docker tag qgis/qgis-pr-build:PR${GITHUB_PR_NUMBER} qgis_image
-          docker-compose -f .docker/docker-compose-testing-oracle.yml run qgis-deps /root/QGIS/.docker/docker-qgis-test.sh
+      # - name: Print vars
+      #   id: tests
+      #   run: |
+      #     docker tag qgis/qgis-pr-build:PR${GITHUB_PR_NUMBER} qgis_image
+      #     docker-compose -f .docker/docker-compose-testing-oracle.yml run qgis-deps /root/QGIS/.docker/docker-qgis-test.sh
