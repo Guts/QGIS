@@ -244,9 +244,8 @@ jobs:
 #          edit-mode: append
 #          body: ${{ steps.process-vars.outputs.COMMENT_BODY }}
 
-
   runtestsoracle:
-    name: "Run oracle tests"
+    name: Run oracle tests
     env:
       DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
